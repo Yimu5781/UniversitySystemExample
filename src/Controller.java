@@ -19,12 +19,17 @@ public class Controller {
         );
         Student me= new Student("20220001","Thomas Selig", Student.Gender.MALE, myCourses, 50, 1);
         System.out.println(me.toString());
+        System.out.println(me);
+//        int[] year1Grades= {50,50,60,60,40};
+//        me.calculateAverageGrade(year1Grades);
+//        System.out.println(me.toString());
+//        me.endOfYear(me);
+//        System.out.println(me.toString());
 //        ArrayList<String> herCourses = new ArrayList<>(
 //                List.of("CPT401", "CPT402", "INT404", "CPT405")
 //        );
 //        Student her = new Student("20220002","Boyu Yang", Student.Gender.FEMALE, herCourses, 80);
 //        System.out.println(her.toString());
-//        me.endOfYear(me);
-//        System.out.println(me.toString());
+
     }
 }

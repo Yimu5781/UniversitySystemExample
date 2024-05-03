@@ -1,29 +1,18 @@
 import java.util.ArrayList;
 
-public class Student {
+public class Student extends Person{
 
     private static final int MAX_GRADE = 100;
     private static final int GRADE_TO_PASS = 40;
 
-    public enum Gender {
-        FEMALE, MALE, NON_BINARY, PREFER_NOT_TO_SAY
-    }
-
     //fields
-    private final String id;
-    private String name;
-    private final Gender gender;
     private ArrayList<Course> courses;
     private int averageGrade;
     private int yearOfStudy;
 
     //constructor
     public Student(String id, String name, Gender gender, ArrayList<Course> courses, int averageGrade, int yearOfStudy) {
-        this.id = id;
-        if(validateName(name)){
-            this.name = name;
-        }
-        this.gender = gender;
+        super(id, gender, name);
         this.courses = courses;
         if(validateAverageGrade(averageGrade)) {
             this.averageGrade = averageGrade;
@@ -62,19 +51,17 @@ public class Student {
         return student;
     }
 
-    //validate
-    private boolean validateName(String name){
-        String[] parts = name.split(" ");
-        if (parts.length!=2){
-            throw new IllegalArgumentException("Name must be 2 parts.");
+    public void calculateAverageGrade(int[] grades){
+        int sum = 0;
+        for(int grade:grades){
+            sum=sum+grade;
         }
-        String firstName = parts[0];
-        String lastName = parts[1];
-        if(!(Character.isUpperCase(firstName.charAt(0))&&Character.isUpperCase(lastName.charAt(0)))){
-            throw new IllegalArgumentException("The first letter must be upper");
-        }
-        return true;
+        int average=0;
+        average=sum/grades.length;
+        this.averageGrade=average;
     }
+
+    //validate
     private boolean validateAverageGrade(int averageGrade){
         if (averageGrade<0){
             throw new IllegalArgumentException("Grade can't be negative.");
