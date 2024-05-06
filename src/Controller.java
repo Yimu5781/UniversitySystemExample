@@ -17,9 +17,22 @@ public class Controller {
         ArrayList<Course> myCourses = new ArrayList<>(
                 List.of(CPT401, CPT409, CPT405, SAT405, INT409)
         );
-        Student me= new Student("20220001","Thomas Selig", Student.Gender.MALE, myCourses, 50, 1);
+        ArrayList<Course> herCourses = new ArrayList<>(
+                List.of(CPT401, CPT405, CAN401, INT409, SAT405, CPT409)
+        );
+
+        Person me= new Student("Thomas Selig", Student.Gender.MALE, myCourses, 50, 1);
+        Person her = new Student("Bob Yi", Student.Gender.FEMALE, herCourses, 80, 2);
+        Person p1 = new Person( "Lily White",Person.Gender.FEMALE);
+        System.out.println("Number of people: "+Person.getNumberOfPeople());
         System.out.println(me.toString());
-        System.out.println(me);
+        System.out.println(her.toString());
+        System.out.println(p1.toString());
+        System.out.println(Course.getAllCourses());
+        StaffMember s1 = new StaffMember("Canteen Jon", Person.Gender.MALE,"SAT",5000);
+        System.out.println(s1.toString());
+        s1.endOfYear();
+        System.out.println(s1.toString());
 //        int[] year1Grades= {50,50,60,60,40};
 //        me.calculateAverageGrade(year1Grades);
 //        System.out.println(me.toString());
@@ -28,7 +41,6 @@ public class Controller {
 //        ArrayList<String> herCourses = new ArrayList<>(
 //                List.of("CPT401", "CPT402", "INT404", "CPT405")
 //        );
-//        Student her = new Student("20220002","Boyu Yang", Student.Gender.FEMALE, herCourses, 80);
 //        System.out.println(her.toString());
 
     }

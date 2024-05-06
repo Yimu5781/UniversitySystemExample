@@ -1,4 +1,7 @@
+import java.time.LocalDate;
+import java.time.chrono.ChronoLocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Student extends Person{
 
@@ -11,9 +14,12 @@ public class Student extends Person{
     private int yearOfStudy;
 
     //constructor
-    public Student(String id, String name, Gender gender, ArrayList<Course> courses, int averageGrade, int yearOfStudy) {
-        super(id, gender, name);
-        this.courses = courses;
+    public Student(String name, Gender gender, ArrayList<Course> courses, int averageGrade, int yearOfStudy) {
+        super(name, gender);
+        this.id= Person.makeEnrolmentNumber();
+        if(validateCourse(courses)){
+            this.courses = courses;
+        }
         if(validateAverageGrade(averageGrade)) {
             this.averageGrade = averageGrade;
         }
@@ -33,7 +39,7 @@ public class Student extends Person{
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", gender=" + gender +
-                ", courses=" + courses +
+                ", courses=" + getCourseCodes(courses) +
                 ", averageGrade=" + averageGrade +
                 ", yearOfStudy=" + yearOfStudy +
                 '}';
@@ -61,6 +67,15 @@ public class Student extends Person{
         this.averageGrade=average;
     }
 
+    public static ArrayList<String> getCourseCodes(ArrayList<Course> courses){
+        ArrayList<String> courseID=new ArrayList<>();
+        for (Course course : courses) {
+            courseID.add(course.getCode());
+        }
+        return courseID;
+    }
+
+
     //validate
     private boolean validateAverageGrade(int averageGrade){
         if (averageGrade<0){
@@ -76,5 +91,13 @@ public class Student extends Person{
         }else {
             return true;
         }
+    }
+    private boolean validateCourse(ArrayList<Course> courses){
+        for(Course course:courses){
+            if (!Course.allCourses.contains(course)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

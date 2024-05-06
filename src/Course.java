@@ -1,6 +1,12 @@
+import java.util.ArrayList;
+
 public class Course {
 
     private static final int MAX_CREDIT = 40;
+    public static ArrayList<Course> allCourses;
+    static {
+        allCourses = new ArrayList<>();
+    }
 
     public enum Status {
         compulsory, optional
@@ -22,6 +28,7 @@ public class Course {
             this.credit = credit;
         }
         this.status = status;
+        allCourses.add(this);
     }
 
     @Override
@@ -49,6 +56,14 @@ public class Course {
 
     public Status getStatus() {
         return status;
+    }
+
+    public static ArrayList<Course> getAllCourses() {
+        return allCourses;
+    }
+
+    public static void removeCourse(Course course){
+        allCourses.remove(course);
     }
 
     //validation
