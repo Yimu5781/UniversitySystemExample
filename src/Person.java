@@ -11,16 +11,15 @@ public class Person {
 
     //fields
     protected String id;
-    protected String name;
+    protected final String name;
     protected final Student.Gender gender;
 
     //constructor
     public Person(String name, Student.Gender gender) {
         numberOfPeople++;
         this.id = makeEnrolmentNumber();
-        if(validateName(name)){
-            this.name = name;
-        }
+        validateName(name);
+        this.name = name;
         this.gender = gender;
     }
 
@@ -65,7 +64,7 @@ public class Person {
     }
 
     //validate
-    private boolean validateName(String name){
+    private void validateName(String name){
         String[] parts = name.split(" ");
         if (parts.length!=2){
             throw new IllegalArgumentException("Name must be 2 parts.");
@@ -75,6 +74,5 @@ public class Person {
         if(!(Character.isUpperCase(firstName.charAt(0))&&Character.isUpperCase(lastName.charAt(0)))){
             throw new IllegalArgumentException("The first letter must be upper");
         }
-        return true;
         }
 }

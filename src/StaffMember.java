@@ -1,6 +1,6 @@
 public class StaffMember extends Person{
 
-    private static double RATE = 0.1;
+    private static final double RATE = 0.1;
 
     //fields
     private String department;
@@ -8,7 +8,6 @@ public class StaffMember extends Person{
 
     public StaffMember(String name, Gender gender, String department, double salary) {
         super(name, gender);
-        this.id= Person.makeEnrolmentNumber();
         this.department = department;
         this.salary = salary;
     }
@@ -26,5 +25,14 @@ public class StaffMember extends Person{
                 ", department='" + department + '\'' +
                 ", salary=" + salary +
                 '}';
+    }
+
+    //getter
+    public String getDepartment() {
+        return department;
+    }
+
+    public double getSalary() {
+        return salary;
     }
 }

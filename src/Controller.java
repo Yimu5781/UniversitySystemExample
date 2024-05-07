@@ -24,6 +24,8 @@ public class Controller {
         Person me= new Student("Thomas Selig", Student.Gender.MALE, myCourses, 50, 1);
         Person her = new Student("Bob Yi", Student.Gender.FEMALE, herCourses, 80, 2);
         Person p1 = new Person( "Lily White",Person.Gender.FEMALE);
+
+        //Lesson2
         System.out.println("Number of people: "+Person.getNumberOfPeople());
         System.out.println(me.toString());
         System.out.println(her.toString());
@@ -33,6 +35,7 @@ public class Controller {
         System.out.println(s1.toString());
         s1.endOfYear();
         System.out.println(s1.toString());
+        //Lesson1
 //        int[] year1Grades= {50,50,60,60,40};
 //        me.calculateAverageGrade(year1Grades);
 //        System.out.println(me.toString());

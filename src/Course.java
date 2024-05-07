@@ -1,32 +1,30 @@
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Course {
 
     private static final int MAX_CREDIT = 40;
-    public static ArrayList<Course> allCourses;
-    static {
-        allCourses = new ArrayList<>();
-    }
+
+    //course database
+    protected static ArrayList<Course> allCourses = new ArrayList<>();
 
     public enum Status {
         compulsory, optional
     }
 
     //fields
-    private String code;
+    private final String code;
     private String title;
     private int credit;
     private Status status;
 
     //constructor
     public Course(String code, String title, int credit, Status status) {
-        if(validateCode(code)){
-            this.code = code;
-        }
+        validateCode(code);
+        this.code = code;
         this.title = title;
-        if(validateCredit(credit)){
-            this.credit = credit;
-        }
+        validateCredit(credit);
+        this.credit = credit;
         this.status = status;
         allCourses.add(this);
     }
@@ -59,15 +57,15 @@ public class Course {
     }
 
     public static ArrayList<Course> getAllCourses() {
-        return allCourses;
+        return new ArrayList<>(allCourses);
     }
 
-    public static void removeCourse(Course course){
-        allCourses.remove(course);
+    public boolean removeCourse(){
+        return allCourses.remove(this);
     }
 
     //validation
-    private boolean validateCode(String code){
+    private static void validateCode(String code){
         if (code.length() != 6) {
             throw new IllegalArgumentException("The code must be six characters long.");
         }
@@ -81,16 +79,27 @@ public class Course {
                 throw new IllegalArgumentException("The last three characters of the code must be digits.");
             }
         }
-        return true;
     }
-    private boolean validateCredit(int credit){
+    private void validateCredit(int credit){
         if(credit<0){
             throw new IllegalArgumentException("The credit must be positive!");
         }
         if(credit>40){
             throw new IllegalArgumentException("The credit can't be more than "+ MAX_CREDIT+".");
         }
-        return true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Course course = (Course) o;
+        return credit == course.credit && Objects.equals(code, course.code) && Objects.equals(title, course.title) && status == course.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(code, title, credit, status);
     }
 }
 

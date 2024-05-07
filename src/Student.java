@@ -16,7 +16,6 @@ public class Student extends Person{
     //constructor
     public Student(String name, Gender gender, ArrayList<Course> courses, int averageGrade, int yearOfStudy) {
         super(name, gender);
-        this.id= Person.makeEnrolmentNumber();
         if(validateCourse(courses)){
             this.courses = courses;
         }
