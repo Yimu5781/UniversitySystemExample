@@ -7,6 +7,7 @@ public class Student extends Person{
 
     private static final int MAX_GRADE = 100;
     private static final int GRADE_TO_PASS = 40;
+    private static final int LENGTH_OF_STUDY = 4;
 
     //fields
     private ArrayList<Course> courses;
@@ -45,15 +46,17 @@ public class Student extends Person{
     }
 
     //setter
-    public Student endOfYear(Student student){
-        if (student.yearOfStudy == 4 && student.averageGrade>=40){
-            System.out.println("Congratulation to your graduation!");
-            return student;
+    public void endOfYear() {
+        if (averageGrade < GRADE_TO_PASS) {
+            System.out.println("Sorry! You have to re-take the year.");
         }
-        if(student.averageGrade>=40){
-            student.yearOfStudy++;
+        else if (yearOfStudy == LENGTH_OF_STUDY) {
+            System.out.println("Congratulations! You have graduated!");
         }
-        return student;
+        else {
+            System.out.println("Yay! You're moving on to the next year.");
+            yearOfStudy++;
+        }
     }
 
     public void calculateAverageGrade(int[] grades){
@@ -74,6 +77,24 @@ public class Student extends Person{
         return courseID;
     }
 
+    private static void checkCourses(ArrayList<Course> courses) {
+        for (Course c : courses) {
+            if (!Course.getAllCourses().contains(c)) {
+                throw new IllegalArgumentException("course " + c.getCode() + " not offered by the University");
+            }
+        }
+    }
+
+    public void changeCourse(Course oldCourse, Course newCourse) {
+        if (oldCourse.getStatus() != Course.Status.compulsory || newCourse.getStatus() != Course.Status.optional) {
+            throw new IllegalArgumentException("can only substitute optional courses");
+        }
+        int index = courses.indexOf(oldCourse);
+        if (index == -1) {
+            throw new IllegalArgumentException("course not found in list of courses");
+        }
+        courses.set(index, newCourse);
+    }
 
     //validate
     private boolean validateAverageGrade(int averageGrade){

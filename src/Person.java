@@ -1,9 +1,11 @@
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Objects;
 
-public class Person {
+public abstract class Person {
 
     private static int numberOfPeople = 0;
+    protected static ArrayList<Person> allPerson = new ArrayList<>();
 
     public enum Gender {
         FEMALE, MALE, NON_BINARY, PREFER_NOT_TO_SAY
@@ -21,11 +23,16 @@ public class Person {
         validateName(name);
         this.name = name;
         this.gender = gender;
+        allPerson.add(this);
     }
 
     //getter
     public static int getNumberOfPeople() {
         return numberOfPeople;
+    }
+
+    public static ArrayList<Person> getAllPerson() {
+        return new ArrayList<>(allPerson);
     }
 
     @Override

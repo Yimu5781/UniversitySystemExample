@@ -1,6 +1,3 @@
-import jdk.jshell.Snippet;
-
-import java.nio.charset.CoderResult;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,18 +20,20 @@ public class Controller {
 
         Person me= new Student("Thomas Selig", Student.Gender.MALE, myCourses, 50, 1);
         Person her = new Student("Bob Yi", Student.Gender.FEMALE, herCourses, 80, 2);
-        Person p1 = new Person( "Lily White",Person.Gender.FEMALE);
+        Person p1 = new StaffMember( "Lily White",Person.Gender.FEMALE,"SAT",5000);
+
+
 
         //Lesson2
-        System.out.println("Number of people: "+Person.getNumberOfPeople());
-        System.out.println(me.toString());
-        System.out.println(her.toString());
-        System.out.println(p1.toString());
-        System.out.println(Course.getAllCourses());
-        StaffMember s1 = new StaffMember("Canteen Jon", Person.Gender.MALE,"SAT",5000);
-        System.out.println(s1.toString());
-        s1.endOfYear();
-        System.out.println(s1.toString());
+//        System.out.println("Number of people: "+Person.getNumberOfPeople());
+//        System.out.println(me.toString());
+//        System.out.println(her.toString());
+//        System.out.println(p1.toString());
+//        System.out.println(Course.getAllCourses());
+//        StaffMember s1 = new StaffMember("Canteen Jon", Person.Gender.MALE,"SAT",5000);
+//        System.out.println(s1.toString());
+//        s1.endOfYear();
+//        System.out.println(s1.toString());
         //Lesson1
 //        int[] year1Grades= {50,50,60,60,40};
 //        me.calculateAverageGrade(year1Grades);
@@ -46,5 +45,11 @@ public class Controller {
 //        );
 //        System.out.println(her.toString());
 
+    }
+
+    public static void update(ArrayList<Person> Persons){
+            for(Person p:Persons){
+
+            }
     }
 }
