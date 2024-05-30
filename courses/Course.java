@@ -1,13 +1,20 @@
-package university;
+package courses;
 
 import java.util.ArrayList;
 
-public record Course(String code,String title,Status status,int weight) {
+public record Course(String code, String title, Status status, int weight) {
+    
     public enum Status { COMPULSORY, OPTIONAL }
-    static ArrayList<Course> allCourses = new ArrayList<>();
+    
+    //course database
+    private static ArrayList<Course> allCourses = new ArrayList<>();
+    
+    //constructor
     public Course {
+        checkCode(code);
         allCourses.add(this);
     }
+    
     private static void checkCode(String code) {
         if (code.length() != 6) {
             invalidCode();
@@ -23,15 +30,26 @@ public record Course(String code,String title,Status status,int weight) {
             }
         }
     }
+    
     private static void invalidCode() {
         throw new IllegalArgumentException("invalid course code");
     }
 
     public static ArrayList<Course> getAllCourses() {
-        return allCourses;
+        return new ArrayList<>(allCourses);
     }
-
+    
     public boolean remove() {
         return allCourses.remove(this);
+    }
+    
+    public Course changeStatus() {
+        Status newStatus = (status == Status.COMPULSORY) ? Status.OPTIONAL : Status.COMPULSORY;
+        return new Course(code, title, newStatus, weight);
+    }
+
+    @Override
+    public String code() {
+        return code;
     }
 }

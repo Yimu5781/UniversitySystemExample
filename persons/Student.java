@@ -2,47 +2,74 @@ package persons;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import university.Course;
-import university.Course.Status;
+import java.util.HashMap;
+import java.util.Map;
 
-public class Student extends Person {
+import courses.Course;
+import courses.Course.Status;
+import jdk.jfr.Category;
+
+import javax.swing.*;
+
+public class Student extends Person  {
     
     //constants
     public static final int MAX_GRADE = 100;
-    public static final int GRADE_TO_PASS = 40;
-    public static final int LENGTH_OF_STUDY = 4;
-    
+    public static final int MIN_YEAR = 1;
+
     //fields
-    private ArrayList<Course> courses;
-    private int averageGrade;
+    private Map<Course, Integer> grades;
     private int yearOfStudy;
+    private final Category category;
+
+    public enum Category{
+
+        UG(40,4,60),
+        PG(50,2,40);
+
+        public final int GRADE_TO_PASS;
+        public final int LENGTH_OF_STUDY;
+        public final int REQUIRED_CREDITS;
+
+
+        Category(int GRADE_TO_PASS, int LENGTH_OF_STUDY, int REQUIRED_CREDITS){
+            this.GRADE_TO_PASS=GRADE_TO_PASS;
+            this.LENGTH_OF_STUDY=LENGTH_OF_STUDY;
+            this.REQUIRED_CREDITS=REQUIRED_CREDITS;
+        }
+
+    }
     
     //constructor
-    public Student(LocalDate enrolmentDate, String name, Gender gender, 
-            ArrayList<Course> courses, int averageGrade, int yearOfStudy) {
+    public Student(String name, Gender gender,
+            Category category, Map<Course, Integer> grades, int yearOfStudy) {
         // initialises fields from Person
-        super(enrolmentDate, name, gender);
+        super(name, gender);
         // initialise Student-specific fields
-        checkCourses(courses);
-        this.courses = courses;
-        checkGrade(averageGrade);
-        this.averageGrade = averageGrade;
-        checkYear(yearOfStudy);
+        this.category = category;
+        checkGrades(grades);
+        this.grades = grades;
+        checkYear(category, yearOfStudy);
         this.yearOfStudy = yearOfStudy;
     }
-    
-    public Student(LocalDate enrolmentDate, String name, Gender gender, ArrayList<Course> courses, int averageGrade) {
-        this(enrolmentDate, name, gender, courses, averageGrade, 1);
+
+    public Student(String name, Gender gender,
+                   Category category, Map<Course, Integer> grades) {
+        this(name, gender, category, grades, MIN_YEAR);
     }
 
-    private static void checkCourses(ArrayList<Course> courses) {
-        for (Course c : courses) {
-            if (!Course.getAllCourses().contains(c)) {
+    
+    private static void checkGrades(Map<Course, Integer> grades) {
+        for (Course c: grades.keySet()) {
+            if (!Course.getAllCourses().contains(c)){
                 throw new IllegalArgumentException("course " + c.code() + " not offered by the University");
             }
         }
+        for (int grade : grades.values()){
+            checkGrade(grade);
+        }
     }
-    
+
     private static void checkGrade(int grade) {
         if (grade < 0) {
             throw new IllegalArgumentException("grade can't be negative");
@@ -52,75 +79,80 @@ public class Student extends Person {
         }
     }
     
-    private static void checkYear(int yearOfStudy) {
-        int minYear = 1;
-        if (yearOfStudy < minYear || yearOfStudy > LENGTH_OF_STUDY) {
+    private static void checkYear(Category category, int yearOfStudy) {
+        if (yearOfStudy < MIN_YEAR || yearOfStudy > category.LENGTH_OF_STUDY) {
             throw new IllegalArgumentException("year of study should be between"
-                    + minYear + " and " + LENGTH_OF_STUDY);
+                    + MIN_YEAR + " and " + category.LENGTH_OF_STUDY);
         }
     }
+
     
-    //getters    
-    public ArrayList<Course> getCourses() {
-        return new ArrayList<>(courses);
+    //getters
+    public Map<Course, Integer> getGrades(){
+        return new HashMap<>(grades);
     }
 
-    public int getAverageGrade() {
-        return averageGrade;
-    }
-    
     public int getYearOfStudy() {
         return yearOfStudy;
     }
-    
-    public ArrayList<String> getCourseCodes() {
-        ArrayList<String> codes = new ArrayList<>();
-        for (Course c : courses) {
-            codes.add(c.code());
+    public int calculateAverageGrade(){
+        int gradeSum=0;
+        int totalWeight=0;
+        for(Map.Entry<Course, Integer> e: grades.entrySet()){
+            Course course=e.getKey();
+            int grade=e.getValue();
+            gradeSum += course.weight()*grade;
+            totalWeight += course.weight();
         }
-        return codes;
+        return (int) Math.round((double) gradeSum+totalWeight);
     }
 
     //to display Student data
     @Override
     public String toString() {
-        return "Student{" + "id=" + getId() + ", name=" + getName() + ", gender=" + getGender() 
-                + ", courses=" + getCourseCodes() + ", averageGrade=" + averageGrade 
+        return "Student{" +"name=" + getName() + ", gender=" + getGender()
+                + ", courses=" + grades
                 + ", yearOfStudy=" + yearOfStudy + '}';
     }
     
     //useful methods
-    public void calculateAverageGrade(int[] grades) {
-        int sum = 0;
-        for (int grade : grades) {
-            sum += grade;
-        }
-        int newAverageGrade = Math.round((float)sum/grades.length);
-        averageGrade = newAverageGrade;
-    }
-    
+    @Override
     public void endOfYear() {
-        if (averageGrade < GRADE_TO_PASS) {
+        int acquiredCredits = 0;
+        for(Map.Entry<Course, Integer> e : grades.entrySet()){
+            Course course= e.getKey();
+            int grade = e.getValue();
+            acquiredCredits += (grade >= category.GRADE_TO_PASS) ? course.weight() : 0;
+        }
+        if(acquiredCredits < category.REQUIRED_CREDITS){
             System.out.println("Sorry! You have to re-take the year.");
         }
-        else if (yearOfStudy == LENGTH_OF_STUDY) {
+        else if (yearOfStudy == category.LENGTH_OF_STUDY) {
             System.out.println("Congratulations! You have graduated!");
         }
         else {
             System.out.println("Yay! You're moving on to the next year.");
+            grades.clear(); //remove all sets for new AY
             yearOfStudy++;
         }
     }
     
-    public void changeCourse(Course oldCourse, Course newCourse) {
+    public void changeCourse(Course oldCourse, Course newCourse, int newGrade) {
         if (oldCourse.status() != Status.OPTIONAL || newCourse.status() != Status.OPTIONAL) {
             throw new IllegalArgumentException("can only substitute optional courses");
         }
-        int index = courses.indexOf(oldCourse);
-        if (index == -1) {
+        if (!grades.containsKey(oldCourse)) {
             throw new IllegalArgumentException("course not found in list of courses");
         }
-        courses.set(index, newCourse);
+        grades.remove(oldCourse);
+        grades.put(newCourse, newGrade);
+    }
+
+    public void assignGrade(int grade, Course course) {
+        if (!grades.containsKey(course)) {
+            throw new IllegalArgumentException("course not found in list of courses");
+        }
+        grades.replace(course, grade);
     }
     
 }
